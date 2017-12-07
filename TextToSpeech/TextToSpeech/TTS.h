@@ -14,11 +14,16 @@ class TTS
 public:
     TTS();
     ~TTS();
-    bool speak(std::string sText);
+    //语音合成是否可用
+    bool bIsEnable();
+    //通过文本合成语音
+    void speak(std::string sText);
+    
 private:
     //string 转 LPCWSTR
     LPCWSTR stringToLPCWSTR(std::string orig);
     std::shared_ptr<ISpVoice> m_pVoice;
     HRESULT m_hr;
+    bool m_bIsEnable;
 };
 

@@ -1,5 +1,4 @@
 #include "TTS.h"
-#include <iostream>
 
 TTS::TTS()
 {
@@ -7,7 +6,7 @@ TTS::TTS()
     //COM≥ı ºªØ
     if (FAILED(::CoInitialize(NULL)))
     {
-        std::cerr << "Init Fail!" << std::endl;
+        m_bIsEnable = false;
         return;
     }
 
@@ -15,8 +14,10 @@ TTS::TTS()
     m_hr = CoCreateInstance(CLSID_SpVoice, NULL, CLSCTX_ALL, IID_ISpVoice, (void **)&m_pVoice);
     if (!SUCCEEDED(m_hr))
     {
-        std::cerr << "Get Fail!" << std::endl;
+        m_bIsEnable = false;
+        return;
     }
+    m_bIsEnable = true;
 }
 
 
@@ -27,11 +28,23 @@ TTS::~TTS()
     ::CoUninitialize();
 }
 
-bool TTS::speak(std::string sText)
+void TTS::speak(std::string sText)
 {
-    m_pVoice->Speak(stringToLPCWSTR(sText), 0, NULL);
-    std::cout << m_hr << std::endl;
-    return false;
+    int nLen = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, sText.c_str(), -1, NULL, 0);
+    if (nLen == 0)
+    {
+        //MultiByteToWideChar get length = 0
+        return ;
+    }
+    wchar_t* pResult = new wchar_t[nLen];
+    MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, sText.c_str(), -1, pResult, nLen);
+    m_pVoice->Speak(pResult, 0, NULL);
+    delete pResult;
+}
+
+bool TTS::bIsEnable()
+{
+    return m_bIsEnable;
 }
 
 LPCWSTR TTS::stringToLPCWSTR(std::string orig)
