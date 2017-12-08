@@ -1,8 +1,9 @@
-#����ת����
+#文字转语音
 
-ʹ��΢����SAPI��д��һ��TTS��
+使用微软的SAPI编写了一个TTS类
+VS2015 C++
 
-##ʹ�÷���
+##使用方法
 ```
 #include "TTS.h"
 int main()
